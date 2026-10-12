@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>River Club ♠ 双人德州扑克</title>
+<style>
+:root{--bg:#071a16;--felt:#0e4a38;--gold:#d8b46a;--cream:#f6f0df;--muted:#9eb8aa}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#143d31,#061410 70%);color:var(--cream);font-family:ui-sans-serif,system-ui,-apple-system,"PingFang SC",sans-serif;min-height:100vh}
+.wrap{max-width:980px;margin:auto;padding:22px 16px 36px}.brand{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.logo{font-family:Georgia,serif;letter-spacing:.14em;color:var(--gold);font-size:19px}.tag{font-size:11px;color:var(--muted);letter-spacing:.12em}
+.panel{background:#10251f;border:1px solid #2b4c3f;border-radius:18px;padding:18px;box-shadow:0 14px 40px #0003}.lobby{max-width:520px;margin:8vh auto}.title{font:34px Georgia,serif;margin:0 0 8px}.sub{color:var(--muted);line-height:1.6;font-size:14px;margin:0 0 22px}
+label{display:block;color:#b5c9bd;font-size:12px;margin:12px 0 6px}input{width:100%;padding:13px 14px;border-radius:10px;background:#071a16;border:1px solid #365747;color:white;font-size:16px;outline:none}button{cursor:pointer;border:0;border-radius:10px;padding:12px 15px;font-size:14px;font-weight:650;transition:.15s}button:disabled{opacity:.35;cursor:not-allowed}.primary{background:var(--gold);color:#17251c}.secondary{background:#213b31;color:#e8f0e9;border:1px solid #466253}.danger{background:#552b2b;color:#ffe9e4}.row{display:flex;gap:10px}.row>*{flex:1}.note{color:#91a99b;font-size:12px;line-height:1.6;margin-top:16px}.hidden{display:none!important}
+.gamehead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}.roomcode{font:20px Georgia,serif;color:var(--gold);letter-spacing:.12em}.table{border:8px solid #573e26;border-radius:48% / 38%;background:radial-gradient(ellipse,#17664c,#0b382a 75%);min-height:360px;padding:24px 16px;display:flex;flex-direction:column;justify-content:space-between;box-shadow:inset 0 0 0 2px #bb8e50,0 12px 30px #0004}
+.seats{display:flex;justify-content:space-between;gap:12px}.seat{min-width:0;text-align:center;flex:1}.playername{font-size:13px;font-weight:700}.chips{color:#d8c18b;font-size:12px;margin-top:4px}.cards{display:flex;justify-content:center;gap:7px;margin:10px 0;min-height:76px}.card{width:49px;height:70px;background:#fffaf0;color:#20251f;border-radius:7px;box-shadow:0 3px 8px #0004;display:flex;flex-direction:column;align-items:center;justify-content:center;font:21px Georgia,serif}.card.red{color:#bd3f3f}.card.back{background:repeating-linear-gradient(45deg,#173f33,#173f33 5px,#e1c47d 5px,#e1c47d 7px);border:3px solid #fff4d7}.card small{font-size:12px}.center{text-align:center;padding:12px 0}.pot{font:24px Georgia,serif;color:var(--gold)}.status{font-size:12px;color:#d7e4d8;margin-top:6px}.board{min-height:78px;display:flex;justify-content:center;gap:6px;margin:10px 0}.board .card{width:45px;height:65px}.controls{margin-top:14px}.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.raisebox{display:flex;gap:8px;margin-top:10px}.raisebox input{max-width:180px}.message{font-size:13px;color:#cbd8ce;min-height:22px;margin:10px 0}.footer{color:#78998a;font-size:11px;text-align:center;margin-top:20px}
+@media(max-width:560px){.wrap{padding:14px 10px}.table{min-height:330px;border-width:6px;border-radius:34px;padding:16px 8px}.card{width:39px;height:58px;font-size:18px}.board .card{width:38px;height:56px}.cards{gap:4px;min-height:62px}.actions{grid-template-columns:repeat(2,1fr)}.title{font-size:29px}.panel{padding:14px}.seat{font-size:12px}}
+</style></head>
+<body><div class="wrap">
+<header class="brand"><div class="logo">♠ RIVER CLUB</div><div class="tag">PRIVATE TABLE · PLAY FOR FUN</div></header>
+<section id="lobby" class="panel lobby">
+<h1 class="title">Your table. Your rules.</h1><p class="sub">创建私人牌桌，邀请朋友加入。两人各自用手机，底牌仅自己可见。仅使用虚拟筹码。</p>
+<label>你的昵称</label><input id="name" maxlength="18" placeholder="例如：River" value="">
+<div class="row" style="margin-top:16px"><button class="primary" id="create">创建房间</button><button class="secondary" id="showjoin">加入房间</button></div>
+<div id="joinbox" class="hidden"><label>六位房间号</label><input id="roominput" maxlength="6" placeholder="输入朋友发来的房间号" autocapitalize="characters"><button class="primary" id="join" style="width:100%;margin-top:10px">加入牌桌</button></div>
+<div class="note">友情提示：这是娱乐用虚拟筹码游戏，不支持真钱下注。请勿刷新或清除浏览器数据，否则可能丢失本机玩家凭证。</div>
+<div id="err" class="message" style="color:#ffb6a8"></div></section>
+<section id="game" class="hidden">
+<div class="gamehead panel"><div><div class="tag">ROOM CODE</div><div class="roomcode" id="roomlabel">------</div></div><button class="secondary" id="copy">复制邀请信息</button></div>
+<div class="table">
+<div class="seats" id="seats"></div>
+<div class="center"><div class="tag">POT</div><div class="pot" id="pot">0</div><div class="board" id="board"></div><div class="status" id="phase"></div></div>
+</div>
+<div class="panel controls"><div class="message" id="message"></div><div class="tag" id="turnhint"></div>
+<div class="actions"><button class="secondary" id="check">过牌</button><button class="primary" id="call">跟注</button><button class="danger" id="fold">弃牌</button><button class="secondary" id="next">下一局</button></div>
+<div class="raisebox"><input id="raiseamount" type="number" min="40" step="10" placeholder="新的总下注额"><button class="primary" id="raise">加注</button></div>
+<div class="note">下注额为本轮的总下注额。若对方未加入或不是你的回合，操作按钮会被禁用。</div></div>
+</section><div class="footer">RIVER CLUB ♠ Built for two friends · Virtual chips only</div></div>
+<script>
+const SUPABASE_URL="https://eeauokaplhxxoyoqxhlz.supabase.co";
+const SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVlYXVva2FwbGh4eG95b3F4aGx6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzOTk5MzMsImV4cCI6MjA5MDk3NTkzM30.2J4T-GLkK9jJ2anjwHIy5PIIvdQTLJA1IxDz7Nci8cc";
+const API=SUPABASE_URL+"/functions/v1/river-poker";
+let room="",token="",seat=-1,state=null,busy=false,poll=null;
+const $=id=>document.getElementById(id);
+function err(s){$("err").textContent=s||""}
+async function callApi(body){const r=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json","apikey":SUPABASE_ANON_KEY,"Authorization":"Bearer "+SUPABASE_ANON_KEY},body:JSON.stringify(body)});const j=await r.json();if(!r.ok||j.error)throw Error(j.error||"请求失败");return j}
+function card(c){if(!c)return '<div class="card back"></div>';let red=c.s==="♥"||c.s==="♦",rank=c.r===14?"A":c.r===13?"K":c.r===12?"Q":c.r===11?"J":String(c.r);return `<div class="card ${red?"red":""}"><div>${rank}</div><small>${c.s}</small></div>`}
+function render(v){state=v;$("pot").textContent=v.pot;$("phase").textContent=({waiting:"等待朋友加入",preflop:"翻牌前",flop:"翻牌圈",turn:"转牌圈",river:"河牌圈",showdown:"本局结束",match_over:"比赛结束"})[v.phase]||v.phase;$("message").textContent=v.message||"";$("board").innerHTML=(v.board||[]).map(card).join("")+Array(Math.max(0,5-(v.board||[]).length)).fill('<div class="card back" style="opacity:.15"></div>').join("");
+$("seats").innerHTML=(v.players||[]).map((p,i)=>`<div class="seat"><div class="playername">${i===v.me?"你 · ":""}${escapeHtml(p.name)} ${i===v.turn&&v.phase!=="showdown"?"◉":""}</div><div class="chips">筹码 ${p.chips}</div><div class="cards">${p.hole?p.hole.map(card).join(""):card(null)+card(null)}</div><div class="tag">${p.folded?"已弃牌":i===v.me?"YOUR SEAT":"OPPONENT"}</div></div>`).join("");
+const myturn=v.turn===v.me&&!["waiting","showdown","match_over"].includes(v.phase),joined=v.players.length===2;
+$("turnhint").textContent=!joined?"分享房间号，等待朋友加入":myturn?"轮到你了":v.phase==="showdown"?"本局已结束":"等待对方操作";
+$("check").disabled=!myturn||v.currentBet>(v.players[v.me]?.round||0);$("call").disabled=!myturn||v.currentBet<=(v.players[v.me]?.round||0);$("fold").disabled=!myturn;$("raise").disabled=!myturn;$("next").disabled=!(v.phase==="showdown"&&joined);
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+async function enter(result){room=result.room;token=result.token;seat=result.seat;localStorage.setItem("riverClubSession",JSON.stringify({room,token,seat}));$("lobby").classList.add("hidden");$("game").classList.remove("hidden");$("roomlabel").textContent=room;render(result.view);if(poll)clearInterval(poll);poll=setInterval(refresh,1600)}
+async function refresh(){if(!room||busy)return;try{const j=await callApi({action:"state",room,token});render(j.view)}catch(e){$("message").textContent=e.message}}
+async function doAction(action,extra={}){if(busy)return;busy=true;try{const j=await callApi({action,room,token,...extra});render(j.view)}catch(e){$("message").textContent=e.message;await refresh()}finally{busy=false}}
+$("create").onclick=async()=>{try{err("");const j=await callApi({action:"create",name:$("name").value});await enter(j)}catch(e){err(e.message)}};
+$("showjoin").onclick=()=>$("joinbox").classList.toggle("hidden");
+$("join").onclick=async()=>{try{err("");const j=await callApi({action:"join",room:$("roominput").value.trim().toUpperCase(),name:$("name").value});await enter(j)}catch(e){err(e.message)}};
+$("check").onclick=()=>doAction("act",{move:"check"});$("call").onclick=()=>doAction("act",{move:"call"});$("fold").onclick=()=>doAction("act",{move:"fold"});$("raise").onclick=()=>doAction("act",{move:"raise",amount:Number($("raiseamount").value)});$("next").onclick=()=>doAction("next");
+$("copy").onclick=async()=>{const text=`来 River Club 玩德州扑克！房间号：${room}`;try{await navigator.clipboard.writeText(text);$("copy").textContent="已复制！";setTimeout(()=>$("copy").textContent="复制邀请信息",1500)}catch{$("copy").textContent=text}};
+try{const saved=JSON.parse(localStorage.getItem("riverClubSession")||"null");if(saved){room=saved.room;token=saved.token;seat=saved.seat;callApi({action:"state",room,token}).then(j=>{ $("lobby").classList.add("hidden");$("game").classList.remove("hidden");$("roomlabel").textContent=room;render(j.view);poll=setInterval(refresh,1600)}).catch(()=>localStorage.removeItem("riverClubSession"))}}catch{}
+</script></body></html>
